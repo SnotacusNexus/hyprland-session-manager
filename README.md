@@ -19,12 +19,14 @@ A comprehensive session management system for Hyprland that preserves your entir
 
 ## ✨ Features
 
-### 🎯 Comprehensive Application Support
-- **🌐 Web Browsers**: Firefox session restoration with tabs and window positions
-- **💻 IDEs**: VSCode, Void IDE workspace and project state preservation
-- **🎨 Creative Apps**: Krita, GIMP document recovery and window layouts
-- **📄 Office Tools**: LibreOffice, Okular document session management
-- **🖥️ Terminals**: Kitty, Terminator session and layout restoration
+### 🎯 Comprehensive Application Support (15 Applications)
+- **🌐 Cross-Browser Support**: Firefox, Chrome/Chromium, and Thorium session restoration with tabs, profiles, and window positions
+- **💬 Messaging Integration**: Discord, Slack, Telegram, and Signal chat state preservation
+- ** IDEs**: VSCode and Void IDE workspace and project state preservation
+- **🖥️ Terminals**: Kitty and Terminator session and layout restoration
+- **📝 Note Taking**: Obsidian vault and session management
+- **🎨 Creative Apps**: Krita document recovery and window layouts
+- **📄 Office Tools**: LibreOffice document session management
 - **📁 File Managers**: Dolphin directory state preservation
 
 ### 🔧 Advanced Session Management
@@ -121,14 +123,25 @@ systemctl --user start hyprland-session.service
 ### Application Hooks
 Session manager includes pre-configured hooks for:
 
-| Application | Pre-Save Hook | Post-Restore Hook | Data Preserved |
-|-------------|---------------|-------------------|----------------|
-| Firefox | ✅ | ✅ | Tabs, session, window positions |
-| VSCode | ✅ | ✅ | Workspace, projects, layouts |
-| Krita | ✅ | ✅ | Documents, recovery files |
-| LibreOffice | ✅ | ✅ | Open documents, window state |
-| Kitty | ✅ | ✅ | Terminal sessions, layouts |
-| Dolphin | ✅ | ✅ | Directory state, window layout |
+| Application | Pre-Save Hook | Post-Restore Hook | Data Preserved | Notes |
+|-------------|---------------|-------------------|----------------|--------|
+| Firefox | ✅ | ✅ | Tabs, session, window positions | Full session restoration |
+| Chrome/Chromium | ✅ | ✅ | Tabs, profiles, window positions | Complete session support |
+| Thorium Browser | ✅ | ✅ | Tabs, profiles, window positions | Full session restoration |
+| VSCode | ✅ | ✅ | Workspace, projects, layouts | Workspace state recovery |
+| Void IDE | ✅ | ✅ | Workspace, projects, layouts | Project state preservation |
+| Kitty | ✅ | ✅ | Terminal sessions, layouts | Basic session support with limitations* |
+| Terminator | ✅ | ✅ | Window layouts, sessions | Layout restoration |
+| Discord | ✅ | ✅ | Server/channel state, window positions | Chat state preservation |
+| Slack | ✅ | ✅ | Workspace/channel state, window positions | Workspace state management |
+| Telegram | ✅ | ✅ | Chat sessions, window positions | Conversation state preservation |
+| Signal | ✅ | ✅ | Conversation state, window positions | Chat session management |
+| Obsidian | ✅ | ✅ | Vault sessions, note state | Note state preservation |
+| Krita | ✅ | ✅ | Documents, recovery files | Document recovery |
+| LibreOffice | ✅ | ✅ | Open documents, window state | Document session management |
+| Dolphin | ✅ | ✅ | Directory state, window layout | Directory navigation |
+
+*Kitty terminal session restoration has limitations with complex terminal sessions
 
 ### Custom Hooks
 Add your own application hooks:
@@ -154,17 +167,26 @@ chmod +x ~/.config/hyprland-session-manager/hooks/*/my-app.sh
 
 ## 📊 Application Support Matrix
 
-### Fully Supported Applications
+### Fully Supported Applications (15 Total)
 - **Firefox**: Complete session restoration with tabs and positions
+- **Chrome/Chromium**: Tab sessions, profiles, and window positions
+- **Thorium Browser**: Full session restoration with tabs and profiles
 - **VSCode**: Workspace state and project recovery
 - **Void IDE**: Window layouts and project state
+- **Kitty**: Terminal sessions and layouts (basic support with limitations)
+- **Terminator**: Window layouts and session management
+- **Discord**: Server/channel state and window positions
+- **Slack**: Workspace/channel state and window positions
+- **Telegram**: Chat session preservation and window positions
+- **Signal**: Conversation state management and window positions
+- **Obsidian**: Vault sessions and note state preservation
 - **Krita**: Document recovery and window positions
-- **GIMP**: Session files and recent documents
 - **LibreOffice**: Open documents and window state
-- **Okular**: PDF sessions and recent files
-- **Kitty**: Terminal sessions and layouts
-- **Terminator**: Window layouts
 - **Dolphin**: Directory state and window positions
+
+### Known Limitations
+- **Kitty Terminal**: Complex terminal sessions may not restore completely
+- **Application-specific data**: Some applications may require manual configuration restoration
 
 ### Basic Support (Window State Only)
 - Any application with proper window class detection

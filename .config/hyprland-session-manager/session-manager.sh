@@ -35,7 +35,7 @@ log_error() {
 
 # Check if Hyprland is running
 is_hyprland_running() {
-    if pgrep -x "hyprland" > /dev/null; then
+    if pgrep -x "Hyprland" > /dev/null; then
         return 0
     else
         return 1

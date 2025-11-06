@@ -97,7 +97,7 @@ save_dev_environment() {
     # Save current git repositories (if any terminal has git repos open)
     if command -v git > /dev/null; then
         # This is a basic approach - could be enhanced
-        find /home/SnotacusNexus/git -name ".git" -type d 2>/dev/null | head -10 > "${SESSION_STATE_DIR}/development/git_repos.txt"
+        find /home/snotacus/git -name ".git" -type d 2>/dev/null | head -10 > "${SESSION_STATE_DIR}/development/git_repos.txt"
     fi
     
     # Save terminal sessions that might be development-related

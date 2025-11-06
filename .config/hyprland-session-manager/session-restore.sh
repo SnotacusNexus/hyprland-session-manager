@@ -32,7 +32,7 @@ wait_for_hyprland() {
     local attempt=1
     
     while [[ $attempt -le $max_attempts ]]; do
-        if pgrep -x "hyprland" > /dev/null && command -v hyprctl > /dev/null; then
+        if pgrep -x "Hyprland" > /dev/null && command -v hyprctl > /dev/null; then
             # Test if hyprctl is responding
             if hyprctl version > /dev/null 2>&1; then
                 log_success "Hyprland is ready (attempt $attempt/$max_attempts)"
