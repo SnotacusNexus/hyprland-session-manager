@@ -112,7 +112,6 @@ copy_files() {
     cp "$SCRIPT_DIR/.config/hyprland-session-manager/session-manager.sh" "$SESSION_DIR/"
     cp "$SCRIPT_DIR/.config/hyprland-session-manager/session-save.sh" "$SESSION_DIR/"
     cp "$SCRIPT_DIR/.config/hyprland-session-manager/session-restore.sh" "$SESSION_DIR/"
-    cp "$SCRIPT_DIR/.config/hyprland-session-manager/detect-hyprland.sh" "$SESSION_DIR/"
     
     # Copy hooks
     cp "$SCRIPT_DIR/.config/hyprland-session-manager/hooks/pre-save/"*.sh "$SESSION_DIR/hooks/pre-save/"
