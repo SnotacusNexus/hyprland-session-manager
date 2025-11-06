@@ -1,16 +1,5 @@
 # 🚀 Hyprland Session Manager
 
-![GitHub](https://img.shields.io/github/license/SnotacusNexus/hyprland-session-manager)
-
-![GitHub release](https://img.shields.io/github/v/release/SnotacusNexus/hyprland-session-manager)
-
-![GitHub issues](https://img.shields.io/github/issues/SnotacusNexus/hyprland-session-manager)
-
-![GitHub pull requests](https://img.shields.io/github/issues-pr/SnotacusNexus/hyprland-session-manager)
-
-
-# 🚀 Hyprland Session Manager
-
 A comprehensive session management system for Hyprland that preserves your entire desktop state across reboots. Save and restore window layouts, application sessions, and workspace configurations with intelligent application-specific hooks.
 
 ![Hyprland Session Manager](https://img.shields.io/badge/Hyprland-Compatible-blue)
@@ -22,7 +11,7 @@ A comprehensive session management system for Hyprland that preserves your entir
 ### 🎯 Comprehensive Application Support (15 Applications)
 - **🌐 Cross-Browser Support**: Firefox, Chrome/Chromium, and Thorium session restoration with tabs, profiles, and window positions
 - **💬 Messaging Integration**: Discord, Slack, Telegram, and Signal chat state preservation
-- ** IDEs**: VSCode and Void IDE workspace and project state preservation
+- **💻 IDEs**: VSCode and Void IDE workspace and project state preservation
 - **🖥️ Terminals**: Kitty and Terminator session and layout restoration
 - **📝 Note Taking**: Obsidian vault and session management
 - **🎨 Creative Apps**: Krita document recovery and window layouts
@@ -53,7 +42,7 @@ A comprehensive session management system for Hyprland that preserves your entir
 ### Quick Install
 ```bash
 # Clone the repository
-git clone https://github.com/SnotacusNexus/hyprland-session-manager.git
+git clone https://github.com/yourusername/hyprland-session-manager.git
 cd hyprland-session-manager
 
 # Run installation script
@@ -123,23 +112,23 @@ systemctl --user start hyprland-session.service
 ### Application Hooks
 Session manager includes pre-configured hooks for:
 
-| Application | Pre-Save Hook | Post-Restore Hook | Data Preserved | Notes |
-|-------------|---------------|-------------------|----------------|--------|
-| Firefox | ✅ | ✅ | Tabs, session, window positions | Full session restoration |
-| Chrome/Chromium | ✅ | ✅ | Tabs, profiles, window positions | Complete session support |
-| Thorium Browser | ✅ | ✅ | Tabs, profiles, window positions | Full session restoration |
-| VSCode | ✅ | ✅ | Workspace, projects, layouts | Workspace state recovery |
-| Void IDE | ✅ | ✅ | Workspace, projects, layouts | Project state preservation |
-| Kitty | ✅ | ✅ | Terminal sessions, layouts | Basic session support with limitations* |
-| Terminator | ✅ | ✅ | Window layouts, sessions | Layout restoration |
-| Discord | ✅ | ✅ | Server/channel state, window positions | Chat state preservation |
-| Slack | ✅ | ✅ | Workspace/channel state, window positions | Workspace state management |
-| Telegram | ✅ | ✅ | Chat sessions, window positions | Conversation state preservation |
-| Signal | ✅ | ✅ | Conversation state, window positions | Chat session management |
-| Obsidian | ✅ | ✅ | Vault sessions, note state | Note state preservation |
-| Krita | ✅ | ✅ | Documents, recovery files | Document recovery |
-| LibreOffice | ✅ | ✅ | Open documents, window state | Document session management |
-| Dolphin | ✅ | ✅ | Directory state, window layout | Directory navigation |
+| Application     | Pre-Save Hook | Post-Restore Hook | Data Preserved                            | Notes                                   |
+| --------------- | ------------- | ----------------- | ----------------------------------------- | --------------------------------------- |
+| Firefox         | ✅             | ✅                 | Tabs, session, window positions           | Full session restoration                |
+| Chrome/Chromium | ✅             | ✅                 | Tabs, profiles, window positions          | Complete session support                |
+| Thorium Browser | ✅             | ✅                 | Tabs, profiles, window positions          | Full session restoration                |
+| VSCode          | ✅             | ✅                 | Workspace, projects, layouts              | Workspace state recovery                |
+| Void IDE        | ✅             | ✅                 | Workspace, projects, layouts              | Project state preservation              |
+| Kitty           | ✅             | ✅                 | Terminal sessions, layouts                | Basic session support with limitations* |
+| Terminator      | ✅             | ✅                 | Window layouts, sessions                  | Layout restoration                      |
+| Discord         | ✅             | ✅                 | Server/channel state, window positions    | Chat state preservation                 |
+| Slack           | ✅             | ✅                 | Workspace/channel state, window positions | Workspace state management              |
+| Telegram        | ✅             | ✅                 | Chat sessions, window positions           | Conversation state preservation         |
+| Signal          | ✅             | ✅                 | Conversation state, window positions      | Chat session management                 |
+| Obsidian        | ✅             | ✅                 | Vault sessions, note state                | Note state preservation                 |
+| Krita           | ✅             | ✅                 | Documents, recovery files                 | Document recovery                       |
+| LibreOffice     | ✅             | ✅                 | Open documents, window state              | Document session management             |
+| Dolphin         | ✅             | ✅                 | Directory state, window layout            | Directory navigation                    |
 
 *Kitty terminal session restoration has limitations with complex terminal sessions
 
@@ -184,13 +173,13 @@ chmod +x ~/.config/hyprland-session-manager/hooks/*/my-app.sh
 - **LibreOffice**: Open documents and window state
 - **Dolphin**: Directory state and window positions
 
-### Known Limitations
-- **Kitty Terminal**: Complex terminal sessions may not restore completely
-- **Application-specific data**: Some applications may require manual configuration restoration
-
 ### Basic Support (Window State Only)
 - Any application with proper window class detection
 - Generic window position and workspace restoration
+
+### Known Limitations
+- **Kitty Terminal**: Complex terminal sessions may not restore completely
+- **Application-specific data**: Some applications may require manual configuration restoration
 
 ## 🐛 Troubleshooting
 
@@ -245,6 +234,17 @@ Got a custom session save/restore script for your favorite app? **We want it!**
 4. **Submit PR** - we'll merge quality hooks into the main project!
 
 ### 🏆 Featured Community Hooks
+- **🌐 Chrome/Chromium**: Complete session restoration with tabs, profiles, and window positions
+- **🌐 Thorium Browser**: Full session restoration with tabs and profiles
+- **💬 Discord**: Server/channel state preservation and window positioning
+- **💬 Slack**: Workspace/channel state management and session recovery
+- **💬 Telegram**: Chat session preservation and conversation state
+- **💬 Signal**: Conversation state management and chat sessions
+- **🖥️ Kitty**: Terminal session and layout restoration (basic support with limitations)
+- **🖥️ Terminator**: Window layouts and session management
+- **📝 Obsidian**: Vault sessions and note state preservation
+- **💻 Void IDE**: Workspace and project state preservation
+
 *Your hooks could be featured here!* Submit your PR and help others.
 
 ### 🤝 Contributing Guidelines
@@ -273,7 +273,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Your Name]** - Project creator and maintainer
 
 ### 🤝 Community Hook Contributors
-*This space reserved for your name! Submit your first hook PR to be featured here.*
+- **[Community Contributor]** - Chrome/Chromium session hooks
+- **[Community Contributor]** - Discord workspace hooks
+- **[Community Contributor]** - Slack channel hooks
+- **[Hyprland Session Manager Team]** - Thorium, Kitty, Terminator, Telegram, Signal, Void IDE, Obsidian hooks
+
+*Submit your first hook PR to be featured here!*
 
 ### 💖 Special Thanks
 - **Hyprland Team** for the amazing compositor
