@@ -1,0 +1,8 @@
+[Unit]
+Description=Hyprland Session Target
+Documentation=https://github.com/snotacus/hyprland-session-manager
+Requires=hyprland-session.service
+After=hyprland-session.service
+
+[Install]
+WantedBy=default.target

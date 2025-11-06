@@ -1,0 +1,68 @@
+name: Validate Community Hooks
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'community-hooks/**'
+      - '.github/workflows/validate-hooks.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'community-hooks/**'
+
+jobs:
+  validate-hooks:
+    name: Validate Community Hooks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup environment
+      run: |
+        sudo apt update
+        sudo apt install -y zsh jq
+        # Install Hyprland dependencies for testing
+        sudo apt install -y libwayland-dev wayland-protocols \
+          libxkbcommon-dev libpixman-1-dev libinput-dev \
+          meson ninja-build cmake
+        
+    - name: Make validation script executable
+      run: chmod +x validate-hook.sh
+      
+    - name: Run hook validation
+      run: ./validate-hook.sh
+      
+    - name: Upload validation report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: hook-validation-report
+        path: |
+          community-hooks/
+        retention-days: 7
+        
+    - name: Comment on PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { execSync } = require('child_process');
+          try {
+            const result = execSync('./validate-hook.sh', { encoding: 'utf8' });
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🔍 Hook Validation Results\n\n✅ All community hooks passed validation!\n\n\`\`\`\n${result}\n\`\`\`\n\nYour hooks are ready for review and merging! 🎉`
+            });
+          } catch (error) {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🔍 Hook Validation Results\n\n❌ Some hooks failed validation. Please fix the issues below:\n\n\`\`\`\n${error.stdout}\n\`\`\`\n\nSee the validation logs for details.`
+            });
+          }

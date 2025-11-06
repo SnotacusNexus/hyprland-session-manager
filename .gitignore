@@ -1,0 +1,35 @@
+# Session state data
+session-state/
+*.session
+*.state
+
+# Backup files
+*.backup
+*.old
+.backup-*
+
+# Personal configuration
+personal-config/
+secrets.conf
+*.key
+*.token
+
+# Temporary files
+*.tmp
+*.temp
+
+# Log files
+*.log
+logs/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Development
+research_data/
+test-data/
+
+# Local overrides
+local-overrides/
+user-config/

@@ -1,0 +1,26 @@
+[Unit]
+Description=Hyprland Session Manager
+Documentation=https://github.com/snotacus/hyprland-session-manager
+Wants=hyprland-session.target
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=%h/.config/hyprland-session-manager/session-manager.sh restore
+ExecStop=%h/.config/hyprland-session-manager/session-manager.sh save
+TimeoutStartSec=30
+TimeoutStopSec=30
+Environment=XDG_RUNTIME_DIR=/run/user/%U
+Environment=WAYLAND_DISPLAY=wayland-1
+
+# Zsh environment
+Environment=SHELL=/usr/bin/zsh
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=hyprland-session.target
