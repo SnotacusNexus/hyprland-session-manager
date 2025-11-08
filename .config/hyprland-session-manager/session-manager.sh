@@ -53,7 +53,8 @@ is_zfs_root() {
 
 # Source environment validation system
 source_environment_validation() {
-    local env_validation_script="$(dirname "$0")/../environment-validation.sh"
+    local env_validation_script="$(dirname "$0")/../../../hyprland-session-manager/hooks/legacy/environment-validation.sh"
+    
     if [[ -f "$env_validation_script" ]]; then
         source "$env_validation_script"
         log_info "Environment validation system loaded"
@@ -81,8 +82,8 @@ source_environment_change_detection() {
 initialize_quantum_state_manager() {
     log_info "Initializing Quantum State Manager..."
     
-    local quantum_manager_script="$(dirname "$0")/../../quantum-state-manager.py"
-    local quantum_config_script="$(dirname "$0")/../../quantum-state-config.py"
+    local quantum_manager_script="$(dirname "$0")/../../../hyprland-session-manager/scripts/quantum/quantum-state-manager.py"
+    local quantum_config_script="$(dirname "$0")/../../../hyprland-session-manager/scripts/quantum/quantum-state-config.py"
     
     if [[ -f "$quantum_manager_script" && -f "$quantum_config_script" ]]; then
         log_success "Quantum State Manager scripts found"
@@ -97,7 +98,7 @@ initialize_quantum_state_manager() {
 capture_quantum_state() {
     log_info "Capturing quantum state..."
     
-    local quantum_manager_script="$(dirname "$0")/../../quantum-state-manager.py"
+    local quantum_manager_script="$(dirname "$0")/../../../hyprland-session-manager/scripts/quantum/quantum-state-manager.py"
     
     if [[ -f "$quantum_manager_script" ]]; then
         python3 "$quantum_manager_script" --capture --save
@@ -122,7 +123,7 @@ capture_quantum_state() {
 load_quantum_state() {
     log_info "Loading quantum state..."
     
-    local quantum_manager_script="$(dirname "$0")/../../quantum-state-manager.py"
+    local quantum_manager_script="$(dirname "$0")/../../../hyprland-session-manager/scripts/quantum/quantum-state-manager.py"
     
     if [[ -f "$quantum_manager_script" ]]; then
         python3 "$quantum_manager_script" --load --restore
@@ -145,7 +146,7 @@ load_quantum_state() {
 start_quantum_auto_save() {
     log_info "Starting quantum state auto-save..."
     
-    local quantum_manager_script="$(dirname "$0")/../../quantum-state-manager.py"
+    local quantum_manager_script="$(dirname "$0")/../../../hyprland-session-manager/scripts/quantum/quantum-state-manager.py"
     
     if [[ -f "$quantum_manager_script" ]]; then
         python3 "$quantum_manager_script" --auto-save &
@@ -183,7 +184,7 @@ stop_quantum_auto_save() {
 validate_quantum_state() {
     log_info "Validating quantum state compatibility..."
     
-    local quantum_manager_script="$(dirname "$0")/../../quantum-state-manager.py"
+    local quantum_manager_script="$(dirname "$0")/../../../hyprland-session-manager/scripts/quantum/quantum-state-manager.py"
     
     if [[ -f "$quantum_manager_script" ]]; then
         python3 "$quantum_manager_script" --validate
@@ -206,7 +207,7 @@ validate_quantum_state() {
 migrate_legacy_to_quantum() {
     log_info "Migrating legacy session data to quantum state..."
     
-    local quantum_manager_script="$(dirname "$0")/../../quantum-state-manager.py"
+    local quantum_manager_script="$(dirname "$0")/../../../hyprland-session-manager/scripts/quantum/quantum-state-manager.py"
     
     if [[ -f "$quantum_manager_script" && -d "$SESSION_STATE_DIR" ]]; then
         python3 "$quantum_manager_script" --migrate-legacy "$SESSION_STATE_DIR"

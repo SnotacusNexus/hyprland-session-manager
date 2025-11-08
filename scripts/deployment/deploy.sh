@@ -28,8 +28,8 @@ log_error() {
     echo -e "${RED}[DEPLOY ERROR]${NC} $1"
 }
 
-# Get script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Get project root directory (one level up from scripts/deployment)
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 # Check if running as correct user
 check_user() {
@@ -57,7 +57,7 @@ backup_existing() {
 deploy_files() {
     log_info "Deploying configuration files..."
     
-    local source_dir="$SCRIPT_DIR/.config/hyprland-session-manager"
+    local source_dir="$PROJECT_ROOT/.config/hyprland-session-manager"
     local target_dir="${HOME}/.config/hyprland-session-manager"
     
     # Create target directory structure
