@@ -118,11 +118,19 @@ save_your_app_session() {
         # Extract open documents from window titles
         hyprctl clients -j | jq -r '.[] | select(.class == "yourapp") | .title' > "${SESSION_STATE_DIR}/yourapp/window_titles.txt" 2>/dev/null
         
-        # Save window positions and layouts
+        # Save window positions and layouts (workspace data automatically captured)
         hyprctl clients -j | jq -r '.[] | select(.class == "yourapp") | "\(.address):\(.at[0]):\(.at[1]):\(.size[0]):\(.size[1]):\(.workspace.id):\(.title)"' > "${SESSION_STATE_DIR}/yourapp/positions.txt" 2>/dev/null
         
         # Save application-specific session files
         # Example: cp "${HOME}/.config/yourapp/session.json" "${SESSION_STATE_DIR}/yourapp/" 2>/dev/null
+        
+        # Optional: Leverage enhanced workspace data
+        if [[ -f "${SESSION_STATE_DIR}/application_workspace_mapping.json" ]]; then
+            local workspace=$(jq -r ".[] | select(.class == \"yourapp\") | .workspace" "${SESSION_STATE_DIR}/application_workspace_mapping.json" 2>/dev/null)
+            if [[ -n "$workspace" && "$workspace" != "null" ]]; then
+                log_info "Your App workspace assignment detected: $workspace"
+            fi
+        fi
         
         log_success "Your App session information saved"
     else
@@ -185,6 +193,14 @@ restore_your_app_session() {
             # Restore application session
             # Example: cp "${SESSION_STATE_DIR}/yourapp/session.json" "${HOME}/.config/yourapp/" 2>/dev/null
             
+            # Optional: Check workspace assignment (workspace positioning handled by main system)
+            if [[ -f "${SESSION_STATE_DIR}/application_workspace_mapping.json" ]]; then
+                local workspace=$(jq -r ".[] | select(.class == \"yourapp\") | .workspace" "${SESSION_STATE_DIR}/application_workspace_mapping.json" 2>/dev/null)
+                if [[ -n "$workspace" && "$workspace" != "null" ]]; then
+                    log_info "Your App will be restored to workspace $workspace"
+                fi
+            fi
+            
             log_success "Your App session restored"
         else
             log_warning "No Your App session data found to restore"
@@ -214,12 +230,49 @@ main "$@"
 - Verify session data is saved correctly
 - Verify session data is restored correctly
 - Test edge cases and error conditions
+- Test with enhanced workspace data available
+- Verify hooks work with both traditional and enhanced session data
 
 ### Step 4: Update Documentation
 
 - Add your application to the README.md support matrix
 - Document any special requirements or limitations
 - Add examples if applicable
+- Note workspace integration capabilities
+
+### Workspace-Aware Hook Development
+
+When creating hooks for the enhanced workspace system:
+
+1. **Focus on Application Data**: Let the main system handle workspace management
+2. **Check for Enhanced Data**: Use workspace mapping when available
+3. **Maintain Compatibility**: Ensure hooks work with both data formats
+4. **Coordinate with Main System**: Avoid duplicating workspace positioning logic
+
+See [workspace-restoration-hooks-guide.md](workspace-restoration-hooks-guide.md) for detailed workspace integration guidance.
+
+### Terminal Application Enhancement
+
+For terminal applications, consider saving environment and path information:
+
+```bash
+# Example: Enhanced terminal session saving
+save_terminal_session() {
+    local app_class="$1"
+    local app_state_dir="${SESSION_STATE_DIR}/$app_class"
+    
+    mkdir -p "$app_state_dir"
+    
+    # Save window information
+    hyprctl clients -j | jq -r ".[] | select(.class == \"$app_class\") | \"\(.address):\(.at[0]):\(.at[1]):\(.size[0]):\(.size[1]):\(.workspace.id):\(.title)\"" > "${app_state_dir}/positions.txt"
+    
+    # Save terminal-specific data (environment, current path)
+    # This requires application-specific implementation
+    save_terminal_environment_data "$app_class" "$app_state_dir"
+}
+```
+
+See the terminal-specific documentation for detailed implementation examples.
 
 ## 🔄 Pull Request Process
 

@@ -45,7 +45,7 @@ community-hooks/
 
 ## 🚀 Hook Template
 
-Use this template for all new hooks:
+Use this template for all new hooks. For workspace-aware hooks, see the enhanced template below.
 
 ```bash
 #!/usr/bin/env zsh
@@ -113,8 +113,16 @@ save_app_session() {
         # Save window titles
         hyprctl clients -j | jq -r ".[] | select(.class == \"$app_class\") | .title" > "${app_state_dir}/window_titles.txt" 2>/dev/null
         
-        # Save window positions
+        # Save window positions (workspace data automatically captured by enhanced system)
         hyprctl clients -j | jq -r ".[] | select(.class == \"$app_class\") | \"\(.address):\(.at[0]):\(.at[1]):\(.size[0]):\(.size[1]):\(.workspace.id):\(.title)\"" > "${app_state_dir}/positions.txt" 2>/dev/null
+        
+        # Optional: Leverage enhanced workspace data when available
+        if [[ -f "${SESSION_STATE_DIR}/application_workspace_mapping.json" ]]; then
+            local workspace=$(jq -r ".[] | select(.class == \"$app_class\") | .workspace" "${SESSION_STATE_DIR}/application_workspace_mapping.json" 2>/dev/null)
+            if [[ -n "$workspace" && "$workspace" != "null" ]]; then
+                log_info "Application workspace assignment detected: $workspace"
+            fi
+        fi
     fi
     
     # Add your application-specific session saving logic here
@@ -141,6 +149,14 @@ restore_app_session() {
     
     # Add your application-specific session restoration logic here
     # Example: Restore configuration files, session data, etc.
+    
+    # Optional: Check workspace assignment (workspace positioning handled by main system)
+    if [[ -f "${SESSION_STATE_DIR}/application_workspace_mapping.json" ]]; then
+        local workspace=$(jq -r ".[] | select(.class == \"$app_class\") | .workspace" "${SESSION_STATE_DIR}/application_workspace_mapping.json" 2>/dev/null)
+        if [[ -n "$workspace" && "$workspace" != "null" ]]; then
+            log_info "Application will be restored to workspace $workspace"
+        fi
+    fi
     
     log_success "[App Name] session restoration completed"
 }
@@ -231,8 +247,8 @@ All accepted hooks will:
 - **🌐 Thorium Browser**: Full session restoration with tabs and profiles
 - **💻 VSCode**: Workspace state and project recovery with layout preservation
 - **💻 Void IDE**: Workspace and project state preservation with configuration backup
-- **🖥️ Kitty**: Terminal session and layout restoration (basic support with limitations)
-- **🖥️ Terminator**: Window layouts and session management with layout file backup
+- **🖥️ Kitty**: Terminal session and layout restoration with workspace integration
+- **🖥️ Terminator**: Window layouts and session management with layout file backup and workspace integration
 - **💬 Discord**: Server/channel state preservation and window positioning
 - **💬 Slack**: Workspace/channel state management and session recovery
 - **💬 Telegram**: Chat session preservation and conversation state
@@ -247,10 +263,10 @@ All accepted hooks will:
 - **🌐 Thorium Browser**: Complete session restoration with profile support and tab recovery
 - **💻 VSCode**: Advanced workspace state recovery with project configuration backup
 - **💬 Telegram Desktop**: Complete chat session preservation with conversation state
-- **🖥️ Kitty Terminal**: Advanced terminal session management with layout restoration (basic support with limitations)
+- **🖥️ Kitty Terminal**: Advanced terminal session management with layout restoration and workspace integration
 - **💻 Void IDE**: Full workspace and project state recovery with configuration backup
 - **💬 Signal Desktop**: Complete conversation state management and chat session preservation
-- **🖥️ Terminator Terminal**: Window layouts and session management with layout file backup
+- **🖥️ Terminator Terminal**: Window layouts and session management with layout file backup and workspace integration
 - **🎨 Krita**: Document recovery system with automatic recovery file management
 - **📄 LibreOffice**: Document session management with open document state preservation
 
@@ -283,13 +299,15 @@ All accepted hooks will:
 - **📁 Dolphin**: Directory state and window layout with navigation preservation
 
 ### Hooks with Known Limitations
-- **🖥️ Kitty Terminal**: Basic session support with limitations:
+- **🖥️ Kitty Terminal**: Enhanced session support with workspace integration:
   - Complex terminal sessions may not restore completely
   - Running processes in terminals are not preserved
   - Session restoration works best with simple shell sessions
-- **🖥️ Terminator Terminal**: Layout restoration with limitations:
+  - Now includes workspace positioning and environment restoration
+- **🖥️ Terminator Terminal**: Layout restoration with workspace integration:
   - Running processes are not preserved
   - Complex terminal layouts may have partial restoration
+  - Enhanced with workspace positioning support
 
 ### Performance & Compatibility Notes
 - All 30 hooks (15 pre-save + 15 post-restore) have been tested for performance and show acceptable execution times
@@ -305,6 +323,85 @@ All accepted hooks will:
 3. **Create hooks** using the template
 4. **Test thoroughly** with different scenarios
 5. **Submit your PR** and join the community!
+
+## 🏗️ Workspace-Aware Hook Development
+
+### Enhanced Hook Template
+
+For applications that benefit from workspace integration, use this enhanced template:
+
+```bash
+# Enhanced save function with workspace awareness
+save_app_session_enhanced() {
+    local app_class="$(get_app_class)"
+    local app_state_dir="${SESSION_STATE_DIR}/appname"
+    
+    log_info "Saving [App Name] session data with workspace integration..."
+    
+    # Create application state directory
+    mkdir -p "$app_state_dir"
+    
+    # Save window information
+    if command -v hyprctl > /dev/null && command -v jq > /dev/null; then
+        # Save window titles
+        hyprctl clients -j | jq -r ".[] | select(.class == \"$app_class\") | .title" > "${app_state_dir}/window_titles.txt" 2>/dev/null
+        
+        # Save window positions (workspace data automatically captured by enhanced system)
+        hyprctl clients -j | jq -r ".[] | select(.class == \"$app_class\") | \"\(.address):\(.at[0]):\(.at[1]):\(.size[0]):\(.size[1]):\(.workspace.id):\(.title)\"" > "${app_state_dir}/positions.txt" 2>/dev/null
+        
+        # Leverage enhanced workspace data when available
+        if [[ -f "${SESSION_STATE_DIR}/application_workspace_mapping.json" ]]; then
+            local workspace=$(jq -r ".[] | select(.class == \"$app_class\") | .workspace" "${SESSION_STATE_DIR}/application_workspace_mapping.json" 2>/dev/null)
+            if [[ -n "$workspace" && "$workspace" != "null" ]]; then
+                log_info "Application workspace assignment detected: $workspace"
+                # Save workspace-specific application data
+                save_workspace_specific_data "$app_class" "$workspace" "$app_state_dir"
+            fi
+        fi
+    fi
+    
+    log_success "[App Name] session data saved with workspace integration"
+}
+```
+
+### Terminal Environment Restoration
+
+For terminal applications, consider implementing environment and path restoration:
+
+```bash
+# Terminal-specific environment saving
+save_terminal_environment() {
+    local app_class="$1"
+    local window="$2"
+    local workspace="$3"
+    local pid="$4"
+    
+    local state_file="${SESSION_STATE_DIR}/terminal-environments/${app_class}_${window}.json"
+    
+    # Get current directory from process
+    local current_dir=$(readlink "/proc/$pid/cwd" 2>/dev/null || echo "")
+    
+    # Save terminal state
+    cat > "$state_file" << EOF
+{
+  "window_address": "$window",
+  "workspace": $workspace,
+  "current_directory": "$current_dir",
+  "shell_pid": $pid,
+  "timestamp": "$(date -Iseconds)"
+}
+EOF
+}
+```
+
+See [terminal-environment-restoration.md](../terminal-environment-restoration.md) for complete implementation details.
+
+### Workspace Integration Benefits
+
+- **Automatic Positioning**: Applications restore to their original workspaces
+- **Layout Coordination**: Works with main system's workspace layout restoration
+- **Enhanced Data**: Access to workspace-specific application data
+- **Backward Compatibility**: Maintains functionality with traditional session data
 
 ---
 

@@ -2,6 +2,7 @@
 
 # 🚀 Hyprland Session Manager Installation Script
 # Complete installation with dependency checking and configuration
+# Now includes Quantum State Management and organized project structure
 
 set -e
 
@@ -16,6 +17,7 @@ NC='\033[0m' # No Color
 SESSION_DIR="${HOME}/.config/hyprland-session-manager"
 HYPRLAND_CONFIG_DIR="${HOME}/.config/hypr"
 SCRIPT_DIR="$(cd "$(dirname "${0}")" && pwd)"
+PROJECT_ROOT="$SCRIPT_DIR"
 
 # Logging functions
 log_info() {
@@ -80,6 +82,31 @@ check_dependencies() {
         fi
     fi
     
+    # Check for Python 3 (for Quantum State Manager)
+    if ! command -v python3 > /dev/null; then
+        log_warning "Python 3 not found. Installing..."
+        if command -v pacman > /dev/null; then
+            sudo pacman -S --noconfirm python python-pip
+        elif command -v apt > /dev/null; then
+            sudo apt update && sudo apt install -y python3 python3-pip
+        else
+            log_error "Cannot install Python 3 automatically. Please install Python 3 manually."
+            exit 1
+        fi
+    fi
+    
+    # Check for Python dependencies
+    if command -v python3 > /dev/null; then
+        if ! python3 -c "import psutil" 2>/dev/null; then
+            log_warning "Python psutil not found. Installing..."
+            pip3 install psutil
+        fi
+        if ! python3 -c "import yaml" 2>/dev/null; then
+            log_warning "Python PyYAML not found. Installing..."
+            pip3 install PyYAML
+        fi
+    fi
+    
     log_success "All dependencies satisfied"
 }
 
@@ -100,6 +127,8 @@ create_directories() {
     mkdir -p "$SESSION_DIR/hooks/pre-save"
     mkdir -p "$SESSION_DIR/hooks/post-restore"
     mkdir -p "$SESSION_DIR/session-state"
+    mkdir -p "$SESSION_DIR/quantum"
+    mkdir -p "$SESSION_DIR/logs"
     
     log_success "Directory structure created"
 }
@@ -108,22 +137,36 @@ create_directories() {
 copy_files() {
     log_info "Copying files..."
     
-    # Copy main scripts
-    cp "$SCRIPT_DIR/.config/hyprland-session-manager/session-manager.sh" "$SESSION_DIR/"
-    cp "$SCRIPT_DIR/.config/hyprland-session-manager/session-save.sh" "$SESSION_DIR/"
-    cp "$SCRIPT_DIR/.config/hyprland-session-manager/session-restore.sh" "$SESSION_DIR/"
-    
-    # Copy hooks
-    cp "$SCRIPT_DIR/.config/hyprland-session-manager/hooks/pre-save/"*.sh "$SESSION_DIR/hooks/pre-save/"
-    cp "$SCRIPT_DIR/.config/hyprland-session-manager/hooks/post-restore/"*.sh "$SESSION_DIR/hooks/post-restore/"
-    
-    # Copy systemd service files
-    if [[ -f "$SCRIPT_DIR/.config/hyprland-session-manager/hyprland-session.service" ]]; then
-        cp "$SCRIPT_DIR/.config/hyprland-session-manager/hyprland-session.service" "$SESSION_DIR/"
+    # Copy main scripts from scripts directory
+    if [[ -f "$PROJECT_ROOT/scripts/session-manager.sh" ]]; then
+        cp "$PROJECT_ROOT/scripts/session-manager.sh" "$SESSION_DIR/"
     fi
     
-    if [[ -f "$SCRIPT_DIR/.config/hyprland-session-manager/hyprland-session.target" ]]; then
-        cp "$SCRIPT_DIR/.config/hyprland-session-manager/hyprland-session.target" "$SESSION_DIR/"
+    # Copy quantum state manager scripts
+    if [[ -f "$PROJECT_ROOT/scripts/quantum/quantum-state-manager.py" ]]; then
+        cp "$PROJECT_ROOT/scripts/quantum/quantum-state-manager.py" "$SESSION_DIR/quantum/"
+    fi
+    if [[ -f "$PROJECT_ROOT/scripts/quantum/quantum-state-config.py" ]]; then
+        cp "$PROJECT_ROOT/scripts/quantum/quantum-state-config.py" "$SESSION_DIR/quantum/"
+    fi
+    
+    # Copy community hooks
+    if [[ -d "$PROJECT_ROOT/community-hooks" ]]; then
+        cp -r "$PROJECT_ROOT/community-hooks/"* "$SESSION_DIR/hooks/"
+    fi
+    
+    # Copy example hooks
+    if [[ -f "$PROJECT_ROOT/examples/custom-hook-example.sh" ]]; then
+        cp "$PROJECT_ROOT/examples/custom-hook-example.sh" "$SESSION_DIR/hooks/"
+    fi
+    
+    # Copy systemd service files
+    if [[ -f "$PROJECT_ROOT/.config/hyprland-session-manager/hyprland-session.service" ]]; then
+        cp "$PROJECT_ROOT/.config/hyprland-session-manager/hyprland-session.service" "$SESSION_DIR/"
+    fi
+    
+    if [[ -f "$PROJECT_ROOT/.config/hyprland-session-manager/hyprland-session.target" ]]; then
+        cp "$PROJECT_ROOT/.config/hyprland-session-manager/hyprland-session.target" "$SESSION_DIR/"
     fi
     
     log_success "Files copied successfully"

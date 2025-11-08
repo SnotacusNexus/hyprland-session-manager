@@ -1,0 +1,45 @@
+[Unit]
+Description=Hyprland Session Manager Environment Change Detector
+Description=Monitors development environments and triggers automatic session saves
+After=network.target
+Wants=network.target
+PartOf=hyprland-session-manager.target
+
+[Service]
+Type=simple
+User=%i
+Group=%i
+ExecStart=/usr/local/bin/environment-change-detector.sh start
+ExecStop=/usr/local/bin/environment-change-detector.sh stop
+ExecReload=/usr/local/bin/environment-change-detector.sh restart
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/%i/.config/hyprland-session-manager
+ReadWritePaths=/home/%i/.local/share/hyprland-session-manager
+ReadWritePaths=/tmp
+
+# Resource limits
+MemoryLimit=512M
+CPUQuota=50%
+
+# Environment
+Environment=HOME=/home/%i
+Environment=USER=%i
+Environment=XDG_RUNTIME_DIR=/run/user/%U
+Environment=CONFIG_FILE=/home/%i/.config/hyprland-session-manager/environment-monitor.conf
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=environment-change-detector
+
+[Install]
+WantedBy=multi-user.target
+WantedBy=hyprland-session-manager.target

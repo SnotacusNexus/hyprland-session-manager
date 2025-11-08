@@ -10,8 +10,8 @@ Type=oneshot
 RemainAfterExit=yes
 ExecStart=%h/.config/hyprland-session-manager/session-manager.sh restore
 ExecStop=%h/.config/hyprland-session-manager/session-manager.sh save
-TimeoutStartSec=30
-TimeoutStopSec=30
+TimeoutStartSec=60
+TimeoutStopSec=60
 Environment=XDG_RUNTIME_DIR=/run/user/%U
 Environment=WAYLAND_DISPLAY=wayland-1
 
